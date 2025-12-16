@@ -132,7 +132,7 @@ uv run --with pre-commit pre-commit run prettier --all-files
 
 ### Testing
 
-Run Python skills directly:
+**For CLI-based skills** (like ultrathink), run scripts directly:
 
 ```bash
 uv run plugins/<plugin>/skills/<skill>/scripts/<script>.py --help
@@ -143,6 +143,8 @@ For ultrathink specifically:
 ```bash
 uv run plugins/ultrathink/skills/ultrathink/scripts/ultrathink.py -t "Test thought" -n 3
 ```
+
+**For documentation-based skills** (like skill-creator), test by invoking the skill in Claude Code and verifying the guidance is correct.
 
 ## Version Management
 
