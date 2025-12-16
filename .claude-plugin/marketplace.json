@@ -28,10 +28,6 @@
         "name": "Anthropic",
         "url": "https://github.com/anthropics/skills"
       },
-      "maintainer": {
-        "name": "Husni Adil Makmur",
-        "email": "husni.adil@gmail.com"
-      },
       "license": "Apache-2.0",
       "source": "./plugins/skill-creator",
       "category": "development"
