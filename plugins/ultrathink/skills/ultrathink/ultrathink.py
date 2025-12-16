@@ -45,7 +45,10 @@ class Assumption(BaseModel):
         str,
         Field(
             pattern=r"^(A\d+|[\w-]+:A\d+)$",
-            description="Unique identifier for this assumption (e.g., 'A1', 'A2' for local, 'session-id:A1' for cross-session)",
+            description=(
+                "Unique identifier for this assumption "
+                "(e.g., 'A1', 'A2' for local, 'session-id:A1' for cross-session)"
+            ),
         ),
     ]
     text: Annotated[
@@ -69,7 +72,10 @@ class Assumption(BaseModel):
     verifiable: Annotated[
         bool,
         Field(
-            description="Can this assumption be verified through testing or research? (default: False)",
+            description=(
+                "Can this assumption be verified through testing or research? "
+                "(default: False)"
+            ),
         ),
     ] = False
     evidence: Annotated[
@@ -112,7 +118,7 @@ def _validate_thought_not_empty(value: str) -> str:
 
 def _parse_json_list(value: Any, field_name: str) -> Any:
     """Parse JSON string to list, or return value as-is"""
-    if value is None or value == "" or value == "null":
+    if value is None or value in {"", "null"}:
         return None
     if isinstance(value, list):
         return value
@@ -121,12 +127,12 @@ def _parse_json_list(value: Any, field_name: str) -> Any:
             parsed = json.loads(value)
             if not isinstance(parsed, list):
                 raise ValueError(
-                    f"{field_name} must be a list or valid JSON string representing a list. "
-                    f"Got type: {type(parsed).__name__}"
+                    f"{field_name} must be a list or valid JSON string "
+                    f"representing a list. Got type: {type(parsed).__name__}"
                 )
             return parsed
         except json.JSONDecodeError as e:
-            raise ValueError(f"{field_name} must be valid JSON. Error: {str(e)}") from e
+            raise ValueError(f"{field_name} must be valid JSON. Error: {e!s}") from e
     raise ValueError(
         f"{field_name} must be a list or JSON string, got {type(value).__name__}"
     )
@@ -219,37 +225,42 @@ class Thought(BaseModel):
         return not self.next_thought_needed
 
     def auto_adjust_total(self) -> None:
-        if self.thought_number > self.total_thoughts:
-            self.total_thoughts = self.thought_number
+        self.total_thoughts = max(self.thought_number, self.total_thoughts)
 
     def validate_references(self, existing_thought_numbers: set[int]) -> None:
-        if self.is_revision and self.revises_thought is not None:
-            if self.revises_thought not in existing_thought_numbers:
-                if not existing_thought_numbers:
-                    raise ValueError(
-                        f"Cannot revise thought {self.revises_thought}: no thoughts exist in this session yet. "
-                        f"To continue an existing session, pass the session_id parameter."
-                    )
-                else:
-                    available = sorted(existing_thought_numbers)
-                    raise ValueError(
-                        f"Cannot revise thought {self.revises_thought}: thought not found in this session. "
-                        f"Available thoughts: {available}"
-                    )
+        if (
+            self.is_revision
+            and self.revises_thought is not None
+            and self.revises_thought not in existing_thought_numbers
+        ):
+            if not existing_thought_numbers:
+                raise ValueError(
+                    f"Cannot revise thought {self.revises_thought}: "
+                    "no thoughts exist in this session yet. "
+                    "To continue an existing session, pass the session_id parameter."
+                )
+            available = sorted(existing_thought_numbers)
+            raise ValueError(
+                f"Cannot revise thought {self.revises_thought}: "
+                f"thought not found in this session. Available thoughts: {available}"
+            )
 
-        if self.is_branch and self.branch_from_thought is not None:
-            if self.branch_from_thought not in existing_thought_numbers:
-                if not existing_thought_numbers:
-                    raise ValueError(
-                        f"Cannot branch from thought {self.branch_from_thought}: no thoughts exist in this session yet. "
-                        f"To continue an existing session, pass the session_id parameter."
-                    )
-                else:
-                    available = sorted(existing_thought_numbers)
-                    raise ValueError(
-                        f"Cannot branch from thought {self.branch_from_thought}: thought not found in this session. "
-                        f"Available thoughts: {available}"
-                    )
+        if (
+            self.is_branch
+            and self.branch_from_thought is not None
+            and self.branch_from_thought not in existing_thought_numbers
+        ):
+            if not existing_thought_numbers:
+                raise ValueError(
+                    f"Cannot branch from thought {self.branch_from_thought}: "
+                    "no thoughts exist in this session yet. "
+                    "To continue an existing session, pass the session_id parameter."
+                )
+            available = sorted(existing_thought_numbers)
+            raise ValueError(
+                f"Cannot branch from thought {self.branch_from_thought}: "
+                f"thought not found in this session. Available thoughts: {available}"
+            )
 
 
 class ThoughtRequest(BaseModel):
@@ -428,7 +439,7 @@ class ThinkingSession:
     def cross_session_warnings(self) -> list[str]:
         return self._cross_session_warnings.copy()
 
-    def add_thought(
+    def add_thought(  # noqa: PLR0912
         self, thought: Thought, validated_cross_session_refs: list[str] | None = None
     ) -> None:
         thought.auto_adjust_total()
@@ -441,19 +452,18 @@ class ThinkingSession:
                 if session_id is None:
                     if assumption_id not in self._assumptions:
                         available = sorted(self._assumptions.keys())
+                        avail_str = str(available) if available else "none"
                         raise ValueError(
-                            f"Cannot depend on assumption {assumption_id}: assumption not found in this session. "
-                            f"Available assumptions: {available if available else 'none'}"
+                            f"Cannot depend on assumption {assumption_id}: "
+                            f"assumption not found. Available: {avail_str}"
                         )
-                else:
-                    if (
-                        validated_cross_session_refs
-                        and assumption_id in validated_cross_session_refs
-                    ):
-                        continue
-                    else:
-                        if assumption_id not in self._unresolved_refs:
-                            self._unresolved_refs.append(assumption_id)
+                elif (
+                    validated_cross_session_refs
+                    and assumption_id in validated_cross_session_refs
+                ):
+                    continue
+                elif assumption_id not in self._unresolved_refs:
+                    self._unresolved_refs.append(assumption_id)
 
         if thought.assumptions:
             for assumption in thought.assumptions:
@@ -467,9 +477,10 @@ class ThinkingSession:
                         )
                     if existing.critical != assumption.critical:
                         raise ValueError(
-                            f"Cannot update assumption {assumption.id}: critical flag mismatch. "
-                            f"Existing: {existing.critical}, New: {assumption.critical}. "
-                            f"Core assumption fields (text, critical) are immutable."
+                            f"Cannot update assumption {assumption.id}: "
+                            f"critical flag mismatch. Existing: {existing.critical}, "
+                            f"New: {assumption.critical}. "
+                            "Core fields (text, critical) are immutable."
                         )
                     existing.confidence = assumption.confidence
                     existing.verifiable = assumption.verifiable
@@ -484,15 +495,19 @@ class ThinkingSession:
                 if session_id is None:
                     if assumption_id not in self._assumptions:
                         available = sorted(self._assumptions.keys())
+                        avail_str = str(available) if available else "none"
                         raise ValueError(
-                            f"Cannot invalidate assumption {assumption_id}: assumption not found in this session. "
-                            f"Available assumptions: {available if available else 'none'}"
+                            f"Cannot invalidate assumption {assumption_id}: "
+                            f"assumption not found. Available: {avail_str}"
                         )
                     self._assumptions[
                         assumption_id
                     ].verification_status = "verified_false"
                 else:
-                    warning = f"Cannot invalidate cross-session assumption {assumption_id}: cross-session invalidation not supported"
+                    warning = (
+                        f"Cannot invalidate cross-session assumption "
+                        f"{assumption_id}: cross-session invalidation not supported"
+                    )
                     self._cross_session_warnings.append(warning)
 
         self._thoughts.append(thought)
@@ -526,7 +541,8 @@ def _validate_session_id(session_id: str) -> None:
         raise ValueError("Session ID too long (max 128 characters)")
     if not _SESSION_ID_PATTERN.match(session_id):
         raise ValueError(
-            f"Invalid session ID '{session_id}': must contain only alphanumeric characters, hyphens, and underscores"
+            f"Invalid session ID '{session_id}': must contain only "
+            "alphanumeric characters, hyphens, and underscores"
         )
 
 
@@ -567,7 +583,7 @@ def save_session(session_id: str, session: ThinkingSession) -> None:
         "unresolved_refs": session._unresolved_refs,
         "cross_session_warnings": session._cross_session_warnings,
     }
-    with open(_session_file_path(session_id), "w") as f:
+    with _session_file_path(session_id).open("w") as f:
         json.dump(data, f, indent=2)
 
 
@@ -577,7 +593,7 @@ def load_session(session_id: str) -> ThinkingSession | None:
         return None
 
     try:
-        with open(file_path) as f:
+        with file_path.open() as f:
             data = json.load(f)
     except (json.JSONDecodeError, OSError):
         # Corrupted or unreadable session file - treat as non-existent
@@ -718,7 +734,7 @@ class UltraThinkService:
 
 app = typer.Typer(
     name="ultrathink",
-    help="A CLI tool for dynamic and reflective problem-solving through sequential thoughts.",
+    help="CLI for dynamic problem-solving through sequential thoughts.",
     add_completion=False,
     no_args_is_help=True,
 )
@@ -861,22 +877,23 @@ def main_callback(
     \b
     Examples:
         # Start a new thinking session
-        uv run ultrathink.py --thought "Let me analyze this problem..." --total 5
+        uv run ultrathink.py --thought "Analyze this..." --total 5
 
         # Continue an existing session
-        uv run ultrathink.py -t "Building on previous analysis..." -n 5 -s <session-id>
+        uv run ultrathink.py -t "Building on analysis..." -n 5 -s <sid>
 
         # Add a thought with confidence
-        uv run ultrathink.py -t "I believe the answer is X" -n 3 -c 0.8 -s <session-id>
+        uv run ultrathink.py -t "Answer is X" -n 3 -c 0.8 -s <sid>
 
         # Create a revision
-        uv run ultrathink.py -t "Revising earlier conclusion..." -n 3 --is-revision --revises 2 -s <session-id>
+        uv run ultrathink.py -t "Revising..." -n 3 --is-revision --revises 2
 
         # Create a branch
-        uv run ultrathink.py -t "Exploring alternative..." -n 3 --branch-from 1 --branch-id alt -s <session-id>
+        uv run ultrathink.py -t "Alternative..." -n 3 --branch-from 1 --branch-id alt
 
         # Add assumptions
-        uv run ultrathink.py -t "Assuming X is true..." -n 3 --assumptions '[{"id":"A1","text":"X is true","critical":true}]'
+        uv run ultrathink.py -t "Assuming..." -n 3 \
+            --assumptions '[{"id":"A1","text":"X is true","critical":true}]'
     """
     if thought is None or total is None:
         if ctx.invoked_subcommand is None:
@@ -913,19 +930,19 @@ def main_callback(
             json.dumps({"error": "validation_error", "details": errors}, indent=2),
             file=sys.stderr,
         )
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from None
     except ValueError as e:
         print(
             json.dumps({"error": "value_error", "message": str(e)}, indent=2),
             file=sys.stderr,
         )
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from None
     except Exception as e:
         print(
             json.dumps({"error": "unexpected_error", "message": str(e)}, indent=2),
             file=sys.stderr,
         )
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from None
 
 
 def main() -> None:

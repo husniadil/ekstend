@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py
+.mypy_cache/
+.ruff_cache/
+
+# Build
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+
+# Cache
+.cache/
+
+# Temporary
+*.tmp
+*.temp

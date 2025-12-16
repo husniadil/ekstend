@@ -1,0 +1,31 @@
+repos:
+  # Ruff - Python linter and formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        name: ruff (lint)
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+        name: ruff (format)
+
+  # Mypy - Python type checker (local hook for better compatibility)
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: uv run --with mypy --with typer --with pydantic mypy
+        language: system
+        types: [python]
+        pass_filenames: false
+        args: [.]
+
+  # Prettier - Format JSON, YAML, Markdown
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        name: prettier
+        types_or: [json, yaml, markdown]
+        additional_dependencies:
+          - prettier@3.4.2

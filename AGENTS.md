@@ -71,6 +71,58 @@ description: When to use this skill (shown to Claude)
 - Include type hints where practical
 - Keep skills self-contained (minimal external dependencies)
 
+### Code Quality Tools
+
+This repository uses pre-commit hooks and CI to enforce code quality. The same
+tools can be run manually:
+
+**Python Linting (ruff):**
+
+```bash
+# Check for issues
+ruff check .
+
+# Auto-fix issues
+ruff check --fix .
+
+# Format code
+ruff format .
+
+# Check formatting only
+ruff format --check .
+```
+
+**Python Type Checking (mypy):**
+
+```bash
+mypy .
+```
+
+**Prettier (JSON, YAML, Markdown):**
+
+```bash
+# Check formatting
+npx prettier --check "**/*.{json,yaml,yml,md}"
+
+# Auto-fix formatting
+npx prettier --write "**/*.{json,yaml,yml,md}"
+```
+
+**Pre-commit Hooks:**
+
+```bash
+# Install hooks (run once)
+uv run --with pre-commit pre-commit install
+
+# Run all hooks manually
+uv run --with pre-commit pre-commit run --all-files
+
+# Run specific hook
+uv run --with pre-commit pre-commit run ruff --all-files
+uv run --with pre-commit pre-commit run mypy --all-files
+uv run --with pre-commit pre-commit run prettier --all-files
+```
+
 ### Testing
 
 Run Python skills directly:

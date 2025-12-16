@@ -30,22 +30,26 @@ plugins/ultrathink/
 The codebase follows a layered design:
 
 1. **Models** (`ultrathink.py:36-378`)
+
    - `Assumption`: Tracks assumptions with confidence, verification status
    - `Thought`: Single thinking step with revision/branching support
    - `ThoughtRequest`: CLI input model
    - `ThoughtResponse`: JSON output model
 
 2. **Session** (`ultrathink.py:381-503`)
+
    - `ThinkingSession`: In-memory session state
    - Manages thoughts, branches, assumptions
    - Validates references and dependencies
 
 3. **Storage** (`ultrathink.py:506-610`)
+
    - File-based persistence in `<tempdir>/ultrathink/sessions/`
    - JSON serialization with path traversal protection
    - Auto-creates session directory
 
 4. **Service** (`ultrathink.py:613-712`)
+
    - `UltraThinkService`: Orchestrates request processing
    - Session creation/loading/saving
    - Cross-session assumption resolution
@@ -75,6 +79,24 @@ uv run plugins/ultrathink/skills/ultrathink/ultrathink.py -t "Next thought" -n 3
 - Type hints throughout with `Annotated` for field metadata
 - Validators use `@field_validator` decorators
 - JSON parsing helpers for CLI string inputs
+
+### Code Quality
+
+Before committing, ensure code passes all checks:
+
+```bash
+# Run from repository root
+
+# Python linting
+ruff check plugins/ultrathink/
+ruff format --check plugins/ultrathink/
+
+# Type checking
+mypy plugins/ultrathink/
+
+# Or run all pre-commit hooks
+uv run --with pre-commit pre-commit run --all-files
+```
 
 ### Testing Changes
 
