@@ -1,0 +1,9 @@
+{
+  "name": "ultrathink",
+  "description": "Sequential thinking CLI for multi-step problem solving with confidence tracking and assumption management",
+  "version": "1.0.0",
+  "author": {
+    "name": "Husni Adil Makmur",
+    "email": "husni.adil@gmail.com"
+  }
+}
