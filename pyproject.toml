@@ -1,7 +1,7 @@
 [project]
-name = "claude-code-plugins"
+name = "ekstend"
 version = "1.0.0"
-description = "Claude Code plugins repository containing reusable plugins"
+description = "A collection of plugins for Claude Code"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"

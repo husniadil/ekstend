@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "claude-code-plugins",
+  "name": "ekstend",
   "version": "1.0.0",
   "description": "A collection of plugins for Claude Code including sequential thinking tools.",
   "owner": {

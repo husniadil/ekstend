@@ -1,4 +1,4 @@
-# Claude Code Plugins
+# Ekstend
 
 A collection of plugins for [Claude Code](https://claude.com/claude-code).
 
@@ -22,8 +22,8 @@ Sequential thinking CLI for multi-step problem solving. Use when breaking down c
 ### From terminal (non-interactive)
 
 ```bash
-claude plugin marketplace add husniadil/claude-code-plugins
-claude plugin install ultrathink@husniadil/claude-code-plugins
+claude plugin marketplace add husniadil/ekstend
+claude plugin install ultrathink@husniadil/ekstend
 ```
 
 ### From Claude Code session (interactive)
@@ -31,13 +31,13 @@ claude plugin install ultrathink@husniadil/claude-code-plugins
 1. Add the marketplace:
 
 ```
-/plugin marketplace add husniadil/claude-code-plugins
+/plugin marketplace add husniadil/ekstend
 ```
 
 2. Install a plugin:
 
 ```
-/plugin install ultrathink@husniadil/claude-code-plugins
+/plugin install ultrathink@husniadil/ekstend
 ```
 
 Or browse available plugins interactively with `/plugin` and select "Browse Plugins".
