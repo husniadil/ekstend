@@ -30,7 +30,7 @@ Guide for creating effective skills that extend Claude's capabilities with speci
 
 [Learn more](./plugins/skill-creator/README.md)
 
-### mysql-cli
+### mysql-db
 
 Access MySQL databases via CLI for querying, schema exploration, and data management. Use when working with MySQL databases to run queries, explore table structures, or manage data.
 
@@ -41,9 +41,9 @@ Access MySQL databases via CLI for querying, schema exploration, and data manage
 - Schema exploration commands
 - Production database warnings
 
-[Learn more](./plugins/mysql-cli/README.md)
+[Learn more](./plugins/mysql-db/README.md)
 
-### postgres-cli
+### postgres-db
 
 Access PostgreSQL databases via CLI for querying, schema exploration, and data management. Use when working with PostgreSQL databases to run queries, explore table structures, or manage data.
 
@@ -55,7 +55,7 @@ Access PostgreSQL databases via CLI for querying, schema exploration, and data m
 - Schema exploration with meta-commands
 - Production database warnings
 
-[Learn more](./plugins/postgres-cli/README.md)
+[Learn more](./plugins/postgres-db/README.md)
 
 ## Installation
 
@@ -65,8 +65,8 @@ Access PostgreSQL databases via CLI for querying, schema exploration, and data m
 claude plugin marketplace add husniadil/ekstend
 claude plugin install ultrathink@ekstend
 claude plugin install skill-creator@ekstend
-claude plugin install mysql-cli@ekstend
-claude plugin install postgres-cli@ekstend
+claude plugin install mysql-db@ekstend
+claude plugin install postgres-db@ekstend
 ```
 
 ### From Claude Code session (interactive)
@@ -82,8 +82,8 @@ claude plugin install postgres-cli@ekstend
 ```
 /plugin install ultrathink@ekstend
 /plugin install skill-creator@ekstend
-/plugin install mysql-cli@ekstend
-/plugin install postgres-cli@ekstend
+/plugin install mysql-db@ekstend
+/plugin install postgres-db@ekstend
 ```
 
 Or browse available plugins interactively with `/plugin` and select "Browse Plugins".

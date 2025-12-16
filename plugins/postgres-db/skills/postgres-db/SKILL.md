@@ -1,6 +1,6 @@
 ---
-name: postgres-cli
-description: Access PostgreSQL databases via CLI for querying, schema exploration, and data management. Use when working with PostgreSQL databases to run queries, explore table structures, manage data, or perform database operations. Supports credentials from user input or config files (.env, docker-compose.yml). IMPORTANT - Always ask user for credentials or credential file location first; never use shell environment variables without explicit user permission.
+name: postgres-db
+description: Use this skill when the user asks to connect to, query, access, or work with a PostgreSQL/Postgres database. Also use when the user mentions PostgreSQL tables, schemas, or wants to run SQL queries on Postgres. Supports credentials from user input or config files (.env, docker-compose.yml). IMPORTANT - Always ask user for credentials or credential file location first; never use shell environment variables without explicit user permission.
 ---
 
 # PostgreSQL CLI
@@ -247,6 +247,8 @@ These operations MUST show a warning and require explicit user confirmation:
 
 - NEVER echo password to terminal output
 - NEVER include password in error messages shown to user
+- NEVER print or show the full psql command that contains passwords (including PGPASSWORD=...) to the user
+- When executing psql commands, do NOT display the command itself - only show the query results
 - Use `PGPASSWORD` env var (set inline for single command only)
 - Do not log queries containing passwords
 

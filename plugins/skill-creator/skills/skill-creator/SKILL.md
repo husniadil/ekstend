@@ -274,10 +274,10 @@ Ask the user where to create the skill. Common patterns:
 1. **For ekstend marketplace plugins**: Use `plugins/<plugin-name>/skills/` where `<plugin-name>` matches `<skill-name>`. Example:
 
    ```bash
-   scripts/init_skill.py mysql-cli --path plugins/mysql-cli/skills
+   scripts/init_skill.py mysql-db --path plugins/mysql-db/skills
    ```
 
-   This creates `plugins/mysql-cli/skills/mysql-cli/SKILL.md`
+   This creates `plugins/mysql-db/skills/mysql-db/SKILL.md`
 
 2. **For standalone skills**: Ask user for their preferred location (e.g., `~/.claude/skills/`, project directory, etc.)
 

@@ -1,20 +1,20 @@
 # AGENTS.md
 
-Instructions for AI coding agents working on the postgres-cli plugin.
+Instructions for AI coding agents working on the postgres-db plugin.
 
 ## Overview
 
-PostgreSQL CLI is a skill that enables Claude Code to access and manage PostgreSQL databases using the `psql` command-line client. It provides safe database operations with credential management and destructive operation protection.
+PostgreSQL DB is a skill that enables Claude Code to access and manage PostgreSQL databases using the `psql` command-line client. It provides safe database operations with credential management and destructive operation protection.
 
 **Plugin structure:**
 
 ```
-plugins/postgres-cli/
+plugins/postgres-db/
   .claude-plugin/plugin.json    # Plugin metadata
   CLAUDE.md                     # Redirects to AGENTS.md
   AGENTS.md                     # This file
   README.md                     # Human documentation
-  skills/postgres-cli/
+  skills/postgres-db/
     SKILL.md                    # Claude Code skill instructions
 ```
 
@@ -52,7 +52,7 @@ plugins/postgres-cli/
 
 ### Modifying the Skill
 
-Edit `skills/postgres-cli/SKILL.md` directly. Key sections:
+Edit `skills/postgres-db/SKILL.md` directly. Key sections:
 
 - Credential Acquisition: How credentials are obtained
 - Safety Rules: Confirmation requirements

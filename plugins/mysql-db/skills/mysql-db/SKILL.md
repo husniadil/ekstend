@@ -1,6 +1,6 @@
 ---
-name: mysql-cli
-description: Access MySQL databases via CLI for querying, schema exploration, and data management. Use when working with MySQL databases to run queries, explore table structures, manage data, or perform database operations. Supports credentials from user input or config files (.env, docker-compose.yml). IMPORTANT - Always ask user for credentials or credential file location first; never use shell environment variables without explicit user permission.
+name: mysql-db
+description: Use this skill when the user asks to connect to, query, access, or work with a MySQL database. Also use when the user mentions MySQL tables, schemas, or wants to run SQL queries on MySQL. Supports credentials from user input or config files (.env, docker-compose.yml). IMPORTANT - Always ask user for credentials or credential file location first; never use shell environment variables without explicit user permission.
 ---
 
 # MySQL CLI
@@ -153,6 +153,8 @@ These operations MUST show a warning and require explicit user confirmation:
 
 - NEVER echo password to terminal output
 - NEVER include password in error messages shown to user
+- NEVER print or show the full mysql command that contains passwords to the user
+- When executing mysql commands, do NOT display the command itself - only show the query results
 - Use `-p` flag (password prompted) or temporary config file if needed
 - Do not log queries containing passwords
 

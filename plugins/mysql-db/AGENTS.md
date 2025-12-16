@@ -1,20 +1,20 @@
 # AGENTS.md
 
-Instructions for AI coding agents working on the mysql-cli plugin.
+Instructions for AI coding agents working on the mysql-db plugin.
 
 ## Overview
 
-MySQL CLI is a skill that enables Claude Code to access and manage MySQL databases using the `mysql` command-line client. It provides safe database operations with credential management and destructive operation protection.
+MySQL DB is a skill that enables Claude Code to access and manage MySQL databases using the `mysql` command-line client. It provides safe database operations with credential management and destructive operation protection.
 
 **Plugin structure:**
 
 ```
-plugins/mysql-cli/
+plugins/mysql-db/
   .claude-plugin/plugin.json    # Plugin metadata
   CLAUDE.md                     # Redirects to AGENTS.md
   AGENTS.md                     # This file
   README.md                     # Human documentation
-  skills/mysql-cli/
+  skills/mysql-db/
     SKILL.md                    # Claude Code skill instructions
 ```
 
@@ -52,7 +52,7 @@ plugins/mysql-cli/
 
 ### Modifying the Skill
 
-Edit `skills/mysql-cli/SKILL.md` directly. Key sections:
+Edit `skills/mysql-db/SKILL.md` directly. Key sections:
 
 - Credential Acquisition: How credentials are obtained
 - Safety Rules: Confirmation requirements

@@ -1,4 +1,4 @@
-# mysql-cli
+# mysql-db
 
 A Claude Code plugin for accessing MySQL databases via CLI.
 
@@ -9,11 +9,12 @@ A Claude Code plugin for accessing MySQL databases via CLI.
 - Credential management from user input or config files (.env, docker-compose.yml)
 - Safety confirmations for destructive operations
 - Production database warnings
+- Credential protection (passwords never shown in output)
 
 ## Installation
 
 ```bash
-claude plugin install mysql-cli@ekstend
+claude plugin install mysql-db@ekstend
 ```
 
 ## Prerequisites
