@@ -43,6 +43,20 @@ Access MySQL databases via CLI for querying, schema exploration, and data manage
 
 [Learn more](./plugins/mysql-cli/README.md)
 
+### postgres-cli
+
+Access PostgreSQL databases via CLI for querying, schema exploration, and data management. Use when working with PostgreSQL databases to run queries, explore table structures, or manage data.
+
+**Features:**
+
+- Credential management (manual input, config files, or .pgpass)
+- SSL/TLS connection support
+- Safety confirmations for destructive operations
+- Schema exploration with meta-commands
+- Production database warnings
+
+[Learn more](./plugins/postgres-cli/README.md)
+
 ## Installation
 
 ### From terminal (non-interactive)
@@ -52,6 +66,7 @@ claude plugin marketplace add husniadil/ekstend
 claude plugin install ultrathink@ekstend
 claude plugin install skill-creator@ekstend
 claude plugin install mysql-cli@ekstend
+claude plugin install postgres-cli@ekstend
 ```
 
 ### From Claude Code session (interactive)
@@ -68,6 +83,7 @@ claude plugin install mysql-cli@ekstend
 /plugin install ultrathink@ekstend
 /plugin install skill-creator@ekstend
 /plugin install mysql-cli@ekstend
+/plugin install postgres-cli@ekstend
 ```
 
 Or browse available plugins interactively with `/plugin` and select "Browse Plugins".
