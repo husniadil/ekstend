@@ -11,12 +11,17 @@ UltraThink is a sequential thinking CLI tool for multi-step problem solving. It 
 ```
 plugins/ultrathink/
   .claude-plugin/plugin.json    # Plugin metadata
+  CLAUDE.md                     # Redirects to AGENTS.md
+  AGENTS.md                     # This file
   README.md                     # Human documentation
   skills/ultrathink/
     SKILL.md                    # Claude Code skill instructions
-    REFERENCE.md                # Complete CLI reference
-    ultrathink.py               # Main implementation (~940 lines)
-    test_ultrathink.py          # Unit tests (130 tests, 97% coverage)
+    references/
+      REFERENCE.md              # Complete CLI reference
+    scripts/
+      ultrathink.py             # Main implementation (~940 lines)
+    tests/
+      test_ultrathink.py        # Unit tests (130 tests, 97% coverage)
 ```
 
 ## Tech Stack
@@ -30,32 +35,32 @@ plugins/ultrathink/
 
 The codebase follows a layered design:
 
-1. **Models** (`ultrathink.py:36-378`)
+1. **Models** (`scripts/ultrathink.py:36-378`)
 
    - `Assumption`: Tracks assumptions with confidence, verification status
    - `Thought`: Single thinking step with revision/branching support
    - `ThoughtRequest`: CLI input model
    - `ThoughtResponse`: JSON output model
 
-2. **Session** (`ultrathink.py:381-503`)
+2. **Session** (`scripts/ultrathink.py:381-503`)
 
    - `ThinkingSession`: In-memory session state
    - Manages thoughts, branches, assumptions
    - Validates references and dependencies
 
-3. **Storage** (`ultrathink.py:506-610`)
+3. **Storage** (`scripts/ultrathink.py:506-610`)
 
    - File-based persistence in `<tempdir>/ultrathink/sessions/`
    - JSON serialization with path traversal protection
    - Auto-creates session directory
 
-4. **Service** (`ultrathink.py:613-712`)
+4. **Service** (`scripts/ultrathink.py:613-712`)
 
    - `UltraThinkService`: Orchestrates request processing
    - Session creation/loading/saving
    - Cross-session assumption resolution
 
-5. **CLI** (`ultrathink.py:715-937`)
+5. **CLI** (`scripts/ultrathink.py:715-937`)
    - Typer-based interface
    - All options documented in docstring
 
@@ -65,13 +70,13 @@ The codebase follows a layered design:
 
 ```bash
 # Show help
-uv run plugins/ultrathink/skills/ultrathink/ultrathink.py --help
+uv run plugins/ultrathink/skills/ultrathink/scripts/ultrathink.py --help
 
 # Basic usage
-uv run plugins/ultrathink/skills/ultrathink/ultrathink.py -t "Test thought" -n 3
+uv run plugins/ultrathink/skills/ultrathink/scripts/ultrathink.py -t "Test thought" -n 3
 
 # With session continuation
-uv run plugins/ultrathink/skills/ultrathink/ultrathink.py -t "Next thought" -n 3 -s <session-id>
+uv run plugins/ultrathink/skills/ultrathink/scripts/ultrathink.py -t "Next thought" -n 3 -s <session-id>
 ```
 
 ### Code Style
@@ -101,34 +106,34 @@ uv run --with pre-commit pre-commit run --all-files
 
 ### Running Tests
 
-Unit tests are located in `skills/ultrathink/test_ultrathink.py`:
+Unit tests are located in `skills/ultrathink/tests/test_ultrathink.py`:
 
 ```bash
 # Run from repository root
 
 # Run all tests
 uv run --with pytest --with pytest-cov --with typer --with pydantic \
-  pytest plugins/ultrathink/skills/ultrathink/test_ultrathink.py -v
+  pytest plugins/ultrathink/skills/ultrathink/tests/test_ultrathink.py -v
 
 # Run with coverage report
 uv run --with pytest --with pytest-cov --with typer --with pydantic \
-  pytest plugins/ultrathink/skills/ultrathink/test_ultrathink.py \
-  --cov=plugins/ultrathink/skills/ultrathink/ultrathink \
+  pytest plugins/ultrathink/skills/ultrathink/tests/test_ultrathink.py \
+  --cov=plugins/ultrathink/skills/ultrathink/scripts/ultrathink \
   --cov-report=term-missing
 
 # Run specific test class
 uv run --with pytest --with pytest-cov --with typer --with pydantic \
-  pytest plugins/ultrathink/skills/ultrathink/test_ultrathink.py::TestThinkingSession -v
+  pytest plugins/ultrathink/skills/ultrathink/tests/test_ultrathink.py::TestThinkingSession -v
 
 # Run specific test
 uv run --with pytest --with pytest-cov --with typer --with pydantic \
-  pytest plugins/ultrathink/skills/ultrathink/test_ultrathink.py::TestThinkingSession::test_add_thought -v
+  pytest plugins/ultrathink/skills/ultrathink/tests/test_ultrathink.py::TestThinkingSession::test_add_thought -v
 ```
 
 Or run from the skill directory:
 
 ```bash
-cd plugins/ultrathink/skills/ultrathink
+cd plugins/ultrathink/skills/ultrathink/tests
 
 # Run all tests
 uv run --with pytest --with pytest-cov --with typer --with pydantic pytest test_ultrathink.py -v
@@ -145,23 +150,23 @@ Test coverage target: **97%+**
 1. Run basic invocation:
 
    ```bash
-   uv run plugins/ultrathink/skills/ultrathink/ultrathink.py -t "Test" -n 1
+   uv run plugins/ultrathink/skills/ultrathink/scripts/ultrathink.py -t "Test" -n 1
    ```
 
 2. Test session persistence:
 
    ```bash
    # Create session
-   SESSION=$(uv run plugins/ultrathink/skills/ultrathink/ultrathink.py -t "Step 1" -n 3 | jq -r '.session_id')
+   SESSION=$(uv run plugins/ultrathink/skills/ultrathink/scripts/ultrathink.py -t "Step 1" -n 3 | jq -r '.session_id')
 
    # Continue session
-   uv run plugins/ultrathink/skills/ultrathink/ultrathink.py -t "Step 2" -n 3 -s "$SESSION"
+   uv run plugins/ultrathink/skills/ultrathink/scripts/ultrathink.py -t "Step 2" -n 3 -s "$SESSION"
    ```
 
 3. Test assumptions:
 
    ```bash
-   uv run plugins/ultrathink/skills/ultrathink/ultrathink.py -t "Test" -n 3 \
+   uv run plugins/ultrathink/skills/ultrathink/scripts/ultrathink.py -t "Test" -n 3 \
      --assumptions '[{"id":"A1","text":"Test assumption"}]'
    ```
 
@@ -169,10 +174,10 @@ Test coverage target: **97%+**
 
    ```bash
    # Should fail: empty thought
-   uv run plugins/ultrathink/skills/ultrathink/ultrathink.py -t "" -n 3
+   uv run plugins/ultrathink/skills/ultrathink/scripts/ultrathink.py -t "" -n 3
 
    # Should fail: invalid session ID
-   uv run plugins/ultrathink/skills/ultrathink/ultrathink.py -t "Test" -n 3 -s "../../../etc/passwd"
+   uv run plugins/ultrathink/skills/ultrathink/scripts/ultrathink.py -t "Test" -n 3 -s "../../../etc/passwd"
    ```
 
 ### Key Validation Rules
@@ -210,26 +215,26 @@ An assumption is "risky" when:
 
 ### Adding a New CLI Option
 
-1. Add to `main_callback()` parameters in `ultrathink.py:739`
+1. Add to `main_callback()` parameters in `scripts/ultrathink.py:739`
 2. Add to `ThoughtRequest` model if needed
 3. Pass through to `Thought` model if it affects thought state
 4. Update `ThoughtResponse` if it affects output
 
 ### Adding a New Assumption Field
 
-1. Add to `Assumption` model (`ultrathink.py:36-104`)
+1. Add to `Assumption` model (`scripts/ultrathink.py:36-104`)
 2. Update `save_session()` serialization
 3. Update `load_session()` deserialization
 4. Add to response if needed
 
 ### Modifying Session Storage
 
-- Storage functions: `ultrathink.py:506-610`
+- Storage functions: `scripts/ultrathink.py:506-610`
 - Session file path: `<tempdir>/ultrathink/sessions/<session_id>.json`
 - Always validate session_id before file operations
 
 ## Related Files
 
 - `SKILL.md`: Instructions shown to Claude Code when skill is invoked
-- `REFERENCE.md`: Full CLI documentation for users
+- `references/REFERENCE.md`: Full CLI documentation for users
 - `README.md`: High-level plugin overview

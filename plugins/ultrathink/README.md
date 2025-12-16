@@ -18,19 +18,19 @@ A CLI tool for sequential thinking and problem-solving.
 
 ```bash
 # Show help
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/ultrathink.py --help
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/scripts/ultrathink.py --help
 
 # Start a new thinking session
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/ultrathink.py --thought "Let me analyze this problem..." --total 5
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/scripts/ultrathink.py --thought "Let me analyze this problem..." --total 5
 
 # Short form
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/ultrathink.py -t "First step" -n 5
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/scripts/ultrathink.py -t "First step" -n 5
 
 # Continue session (use session_id from previous output)
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/ultrathink.py -t "Second step" -n 5 -s <session-id>
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/scripts/ultrathink.py -t "Second step" -n 5 -s <session-id>
 
 # With confidence
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/ultrathink.py -t "I believe X is correct" -n 3 -c 0.8
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/scripts/ultrathink.py -t "I believe X is correct" -n 3 -c 0.8
 ```
 
 ## Documentation

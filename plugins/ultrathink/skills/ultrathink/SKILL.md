@@ -40,16 +40,16 @@ Do NOT use for:
 
 ```bash
 # Start new session
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/ultrathink.py -t "Analyzing the problem..." -n 5
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/scripts/ultrathink.py -t "Analyzing the problem..." -n 5
 
 # Continue session
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/ultrathink.py -t "Next step..." -n 5 -s <session-id>
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/scripts/ultrathink.py -t "Next step..." -n 5 -s <session-id>
 
 # With confidence
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/ultrathink.py -t "I believe X is correct" -n 3 -c 0.8
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/scripts/ultrathink.py -t "I believe X is correct" -n 3 -c 0.8
 
 # With assumption
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/ultrathink.py -t "Assuming Redis available" -n 3 \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/ultrathink/scripts/ultrathink.py -t "Assuming Redis available" -n 3 \
   --assumptions '[{"id":"A1","text":"Redis is available"}]'
 ```
 
@@ -65,4 +65,4 @@ Thought 5 (confidence: 0.95): "Hybrid approach recommended."
 
 ## Reference
 
-For complete documentation including all CLI options, response schema, and advanced examples, see [REFERENCE.md](REFERENCE.md).
+For complete documentation including all CLI options, response schema, and advanced examples, see [references/REFERENCE.md](references/REFERENCE.md).

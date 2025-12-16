@@ -13,6 +13,7 @@ Tests cover:
 from __future__ import annotations
 
 import json
+import sys
 import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -20,6 +21,10 @@ from unittest.mock import patch
 
 import pytest
 from pydantic import ValidationError
+
+# Add scripts directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+
 from ultrathink import (
     Assumption,
     ThinkingSession,
