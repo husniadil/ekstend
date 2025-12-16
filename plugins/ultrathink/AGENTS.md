@@ -16,6 +16,7 @@ plugins/ultrathink/
     SKILL.md                    # Claude Code skill instructions
     REFERENCE.md                # Complete CLI reference
     ultrathink.py               # Main implementation (~940 lines)
+    test_ultrathink.py          # Unit tests (130 tests, 97% coverage)
 ```
 
 ## Tech Stack
@@ -97,6 +98,47 @@ mypy plugins/ultrathink/
 # Or run all pre-commit hooks
 uv run --with pre-commit pre-commit run --all-files
 ```
+
+### Running Tests
+
+Unit tests are located in `skills/ultrathink/test_ultrathink.py`:
+
+```bash
+# Run from repository root
+
+# Run all tests
+uv run --with pytest --with pytest-cov --with typer --with pydantic \
+  pytest plugins/ultrathink/skills/ultrathink/test_ultrathink.py -v
+
+# Run with coverage report
+uv run --with pytest --with pytest-cov --with typer --with pydantic \
+  pytest plugins/ultrathink/skills/ultrathink/test_ultrathink.py \
+  --cov=plugins/ultrathink/skills/ultrathink/ultrathink \
+  --cov-report=term-missing
+
+# Run specific test class
+uv run --with pytest --with pytest-cov --with typer --with pydantic \
+  pytest plugins/ultrathink/skills/ultrathink/test_ultrathink.py::TestThinkingSession -v
+
+# Run specific test
+uv run --with pytest --with pytest-cov --with typer --with pydantic \
+  pytest plugins/ultrathink/skills/ultrathink/test_ultrathink.py::TestThinkingSession::test_add_thought -v
+```
+
+Or run from the skill directory:
+
+```bash
+cd plugins/ultrathink/skills/ultrathink
+
+# Run all tests
+uv run --with pytest --with pytest-cov --with typer --with pydantic pytest test_ultrathink.py -v
+
+# Run with coverage
+uv run --with pytest --with pytest-cov --with typer --with pydantic \
+  pytest test_ultrathink.py --cov=ultrathink --cov-report=term-missing
+```
+
+Test coverage target: **97%+**
 
 ### Testing Changes
 

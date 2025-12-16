@@ -14,11 +14,22 @@ repos:
     hooks:
       - id: mypy
         name: mypy
-        entry: uv run --with mypy --with typer --with pydantic mypy
+        entry: uv run --with mypy --with typer --with pydantic --with pytest mypy
         language: system
         types: [python]
         pass_filenames: false
         args: [.]
+
+  # Pytest - Run tests
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: uv run --with pytest --with pytest-cov --with typer --with pydantic pytest
+        language: system
+        types: [python]
+        pass_filenames: false
+        args: [--tb=short, -q]
 
   # Prettier - Format JSON, YAML, Markdown
   - repo: https://github.com/pre-commit/mirrors-prettier

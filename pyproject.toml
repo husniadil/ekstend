@@ -74,5 +74,31 @@ exclude = [
 ]
 
 [[tool.mypy.overrides]]
-module = ["typer.*", "pydantic.*"]
+module = ["typer.*", "pydantic.*", "pytest.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["test_*", "*_test"]
+disallow_untyped_decorators = false
+
+[tool.pytest.ini_options]
+testpaths = ["plugins"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["plugins"]
+omit = ["*/test_*.py", "*/*_test.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+show_missing = true

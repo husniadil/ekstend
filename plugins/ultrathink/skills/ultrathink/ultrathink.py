@@ -118,10 +118,12 @@ def _validate_thought_not_empty(value: str) -> str:
 
 def _parse_json_list(value: Any, field_name: str) -> Any:
     """Parse JSON string to list, or return value as-is"""
-    if value is None or value in {"", "null"}:
+    if value is None:
         return None
     if isinstance(value, list):
         return value
+    if isinstance(value, str) and value in {"", "null"}:
+        return None
     if isinstance(value, str):
         try:
             parsed = json.loads(value)
@@ -621,7 +623,7 @@ def load_session(session_id: str) -> ThinkingSession | None:
         session._cross_session_warnings = data.get("cross_session_warnings", [])
 
         return session
-    except (KeyError, TypeError, ValidationError):
+    except (KeyError, TypeError, ValidationError, AttributeError):
         # Invalid session data structure - treat as non-existent
         return None
 
