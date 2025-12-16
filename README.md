@@ -17,6 +17,19 @@ Sequential thinking CLI for multi-step problem solving. Use when breaking down c
 
 [Learn more](./plugins/ultrathink/README.md)
 
+### skill-creator
+
+Guide for creating effective skills that extend Claude's capabilities with specialized knowledge, workflows, or tool integrations. Use when you want to create a new skill or update an existing one.
+
+**Features:**
+
+- Step-by-step skill creation guidance
+- Best practices for context management
+- Scripts for initializing, validating, and packaging skills
+- Reference documentation for workflow and output patterns
+
+[Learn more](./plugins/skill-creator/README.md)
+
 ## Installation
 
 ### From terminal (non-interactive)
@@ -45,3 +58,7 @@ Or browse available plugins interactively with `/plugin` and select "Browse Plug
 ## License
 
 MIT
+
+### Third-Party Licenses
+
+- **skill-creator** plugin: Originally created by [Anthropic](https://github.com/anthropics/skills), licensed under Apache License 2.0. See [plugins/skill-creator/LICENSE.txt](./plugins/skill-creator/LICENSE.txt) for details.

@@ -24,6 +24,7 @@ plugins/
 ## Current Plugins
 
 - **ultrathink**: Sequential thinking CLI for multi-step problem solving with confidence tracking and assumption management. Python-based, runs via `uv run`.
+- **skill-creator**: Guide for creating effective skills that extend Claude's capabilities with specialized knowledge, workflows, or tool integrations. Includes utility scripts for initializing, validating, and packaging skills. Licensed under Apache 2.0.
 
 ## Development Guidelines
 

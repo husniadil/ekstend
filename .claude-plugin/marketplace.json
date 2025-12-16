@@ -18,6 +18,22 @@
       },
       "source": "./plugins/ultrathink",
       "category": "development"
+    },
+    {
+      "name": "skill-creator",
+      "description": "Guide for creating effective skills that extend Claude's capabilities with specialized knowledge, workflows, or tool integrations.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Anthropic",
+        "url": "https://github.com/anthropics/skills"
+      },
+      "maintainer": {
+        "name": "Husni Adil Makmur",
+        "email": "husni.adil@gmail.com"
+      },
+      "license": "Apache-2.0",
+      "source": "./plugins/skill-creator",
+      "category": "development"
     }
   ]
 }
