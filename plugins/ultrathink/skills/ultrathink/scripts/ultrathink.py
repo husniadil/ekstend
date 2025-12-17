@@ -15,6 +15,7 @@ Usage:
 
 from __future__ import annotations
 
+import ast
 import json
 import re
 import sys
@@ -117,7 +118,11 @@ def _validate_thought_not_empty(value: str) -> str:
 
 
 def _parse_json_list(value: Any, field_name: str) -> Any:
-    """Parse JSON string to list, or return value as-is"""
+    """Parse JSON string to list, or return value as-is.
+
+    Supports both standard JSON (double quotes) and Python-style literals
+    (single quotes) to handle shell argument mangling.
+    """
     if value is None:
         return None
     if isinstance(value, list):
@@ -125,6 +130,7 @@ def _parse_json_list(value: Any, field_name: str) -> Any:
     if isinstance(value, str) and value in {"", "null"}:
         return None
     if isinstance(value, str):
+        # Try standard JSON first
         try:
             parsed = json.loads(value)
             if not isinstance(parsed, list):
@@ -133,8 +139,25 @@ def _parse_json_list(value: Any, field_name: str) -> Any:
                     f"representing a list. Got type: {type(parsed).__name__}"
                 )
             return parsed
-        except json.JSONDecodeError as e:
-            raise ValueError(f"{field_name} must be valid JSON. Error: {e!s}") from e
+        except json.JSONDecodeError:
+            pass
+
+        # Fallback: try Python literal syntax (handles single quotes)
+        # This helps when shell command arguments mangle JSON quotes
+        try:
+            parsed = ast.literal_eval(value)
+        except (ValueError, SyntaxError):
+            raise ValueError(
+                f"{field_name} must be valid JSON or Python literal. "
+                f"Received: {value[:50]}{'...' if len(value) > 50 else ''}"
+            ) from None
+
+        if not isinstance(parsed, list):
+            raise ValueError(
+                f"{field_name} must be a list or valid JSON/Python literal "
+                f"representing a list. Got type: {type(parsed).__name__}"
+            )
+        return parsed
     raise ValueError(
         f"{field_name} must be a list or JSON string, got {type(value).__name__}"
     )

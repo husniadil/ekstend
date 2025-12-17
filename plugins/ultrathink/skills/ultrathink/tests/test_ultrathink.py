@@ -168,9 +168,28 @@ class TestParseJsonList:
             _parse_json_list('{"key": "value"}', "field")
 
     def test_invalid_json_raises(self) -> None:
-        """Invalid JSON should raise ValueError."""
-        with pytest.raises(ValueError, match="must be valid JSON"):
+        """Invalid JSON/Python literal should raise ValueError."""
+        with pytest.raises(ValueError, match="must be valid JSON or Python literal"):
             _parse_json_list("[invalid", "field")
+
+    def test_single_quote_python_literal(self) -> None:
+        """Python-style single quote syntax should be parsed."""
+        assert _parse_json_list("['a', 'b']", "field") == ["a", "b"]
+
+    def test_single_quote_dict_list(self) -> None:
+        """Python-style dict list with single quotes should be parsed."""
+        result = _parse_json_list("[{'id': 'A1', 'text': 'test'}]", "field")
+        assert result == [{"id": "A1", "text": "test"}]
+
+    def test_mixed_quotes_json_preferred(self) -> None:
+        """Valid JSON should be parsed even when Python syntax also works."""
+        # Double-quoted JSON should work
+        assert _parse_json_list('["a", "b"]', "field") == ["a", "b"]
+
+    def test_python_literal_dict_raises_not_list(self) -> None:
+        """Python literal dict (not list) should raise ValueError."""
+        with pytest.raises(ValueError, match="must be a list"):
+            _parse_json_list("{'key': 'value'}", "field")
 
     def test_non_string_non_list_raises(self) -> None:
         """Non-string, non-list types should raise ValueError."""
