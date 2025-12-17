@@ -1,6 +1,6 @@
 ---
 name: database
-description: Use this skill when the user asks to connect to, query, access, check, look up, or work with a database (MySQL, PostgreSQL/Postgres, SQLite, or Redis). Also triggers on keywords like "db", "database", "SQL", "query", "records", "tables", "data lookup", or any data retrieval requests. Use when user mentions schemas, key-value stores, or wants to run SQL queries or Redis commands. Supports credentials from user input or config files (.env, docker-compose.yml). For MySQL, PostgreSQL, and Redis - always ask user for credentials or credential file location first; never use shell environment variables without explicit user permission. For SQLite - always ask user for the database file path first.
+description: ALWAYS USE THIS SKILL when user mentions ANY database-related keywords including "db", "database", "SQL", "query", "PostgreSQL", "Postgres", "psql", "MySQL", "SQLite", "Redis", "orders", "users", "tables", "records", "data", "cek data", "lihat data", "ambil data", "check data", "get data", "fetch", "select", "insert", "update", "delete". Also trigger on phrases like "cek order", "lihat user", "query table", "di db", "di database", "from database". This skill provides safe database access with mandatory schema exploration before queries. Supports MySQL, PostgreSQL, SQLite, and Redis via CLI.
 ---
 
 # Database CLI
