@@ -27,7 +27,7 @@ from typing import Annotated, Any, Literal
 import typer
 from pydantic import BaseModel, Field, ValidationError, field_validator
 
-__version__ = "2.0.1"
+__version__ = "2.0.2"
 
 # =============================================================================
 # Models
@@ -117,11 +117,97 @@ def _validate_thought_not_empty(value: str) -> str:
     return value
 
 
+def _fix_shell_escaped_quotes(value: str) -> str | None:
+    """Attempt to fix common shell escaping mistakes.
+
+    Returns the corrected string if a fixable pattern is detected, None otherwise.
+
+    Common mistake: Using escaped quotes inside single quotes, e.g.:
+        '[{\"id\":\"A1\"}]' -> results in literal backslashes
+    Fix: Remove the unnecessary backslashes to get valid JSON.
+
+    Also handles nested escaping where text contains escaped quotes:
+        '[{\"text\":\"has \\\"quotes\\\"\"}]' -> '[{"text":"has \"quotes\""}]'
+    """
+    # Pattern: Escaped quotes that resulted in literal backslash+quote
+    # e.g., '[{\"id\":\"A1\",\"text\":\"value\"}]'
+    if r"\"" in value:
+        # First, preserve escaped quotes inside values (\\\" -> placeholder)
+        # These are quotes that should remain escaped in the final JSON
+        placeholder = "\x00ESCAPED_QUOTE\x00"
+        fixed = value.replace(r"\\\"", placeholder)
+        # Remove backslashes before structural double quotes
+        fixed = fixed.replace(r"\"", '"')
+        # Restore escaped quotes inside values
+        fixed = fixed.replace(placeholder, r"\"")
+        # Verify it looks like valid JSON now
+        if fixed.startswith("[") and fixed.endswith("]"):
+            return fixed
+
+    if r"\'" in value:
+        # Similar handling for single quotes
+        placeholder = "\x00ESCAPED_SQUOTE\x00"
+        fixed = value.replace(r"\\'", placeholder)
+        fixed = fixed.replace(r"\'", "'")
+        fixed = fixed.replace(placeholder, r"\'")
+        if fixed.startswith("[") and fixed.endswith("]"):
+            return fixed
+
+    return None
+
+
+class _ParseResult:
+    """Result of parsing attempt: success with list, parsed but not list, or failed."""
+
+    def __init__(
+        self,
+        value: list[Any] | None = None,
+        parsed_type: str | None = None,
+    ) -> None:
+        self.value = value
+        self.parsed_type = parsed_type  # Type name if parsed but not a list
+
+    @property
+    def is_list(self) -> bool:
+        return self.value is not None
+
+    @property
+    def parsed_but_not_list(self) -> bool:
+        return self.parsed_type is not None
+
+
+def _try_parse_as_list(value: str) -> _ParseResult:
+    """Try to parse a string as a list using JSON or Python literal syntax.
+
+    Returns a _ParseResult indicating success, parsed-but-not-list, or failure.
+    """
+    # Try standard JSON first
+    try:
+        parsed = json.loads(value)
+        if isinstance(parsed, list):
+            return _ParseResult(value=parsed)
+        return _ParseResult(parsed_type=type(parsed).__name__)
+    except json.JSONDecodeError:
+        pass
+
+    # Fallback: try Python literal syntax (handles single quotes)
+    try:
+        parsed = ast.literal_eval(value)
+        if isinstance(parsed, list):
+            return _ParseResult(value=parsed)
+        return _ParseResult(parsed_type=type(parsed).__name__)
+    except (ValueError, SyntaxError):
+        pass
+
+    return _ParseResult()
+
+
 def _parse_json_list(value: Any, field_name: str) -> Any:
     """Parse JSON string to list, or return value as-is.
 
     Supports both standard JSON (double quotes) and Python-style literals
-    (single quotes) to handle shell argument mangling.
+    (single quotes) to handle shell argument mangling. Also auto-corrects
+    common shell escaping mistakes like unnecessary backslash escaping.
     """
     if value is None:
         return None
@@ -129,37 +215,32 @@ def _parse_json_list(value: Any, field_name: str) -> Any:
         return value
     if isinstance(value, str) and value in {"", "null"}:
         return None
-    if isinstance(value, str):
-        # Try standard JSON first
-        try:
-            parsed = json.loads(value)
-            if not isinstance(parsed, list):
-                raise ValueError(
-                    f"{field_name} must be a list or valid JSON string "
-                    f"representing a list. Got type: {type(parsed).__name__}"
-                )
-            return parsed
-        except json.JSONDecodeError:
-            pass
+    if not isinstance(value, str):
+        raise ValueError(
+            f"{field_name} must be a list or JSON string, got {type(value).__name__}"
+        )
 
-        # Fallback: try Python literal syntax (handles single quotes)
-        # This helps when shell command arguments mangle JSON quotes
-        try:
-            parsed = ast.literal_eval(value)
-        except (ValueError, SyntaxError):
-            raise ValueError(
-                f"{field_name} must be valid JSON or Python literal. "
-                f"Received: {value[:50]}{'...' if len(value) > 50 else ''}"
-            ) from None
+    # Try parsing the value directly
+    result = _try_parse_as_list(value)
+    if result.is_list:
+        return result.value
+    if result.parsed_but_not_list:
+        raise ValueError(
+            f"{field_name} must be a list or valid JSON string "
+            f"representing a list. Got type: {result.parsed_type}"
+        )
 
-        if not isinstance(parsed, list):
-            raise ValueError(
-                f"{field_name} must be a list or valid JSON/Python literal "
-                f"representing a list. Got type: {type(parsed).__name__}"
-            )
-        return parsed
+    # Try to auto-correct common shell escaping mistakes and re-parse
+    fixed = _fix_shell_escaped_quotes(value)
+    if fixed:
+        result = _try_parse_as_list(fixed)
+        if result.is_list:
+            return result.value
+
+    # All attempts failed - raise error
     raise ValueError(
-        f"{field_name} must be a list or JSON string, got {type(value).__name__}"
+        f"{field_name} must be valid JSON or Python literal. "
+        f"Received: {value[:50]}{'...' if len(value) > 50 else ''}"
     )
 
 
