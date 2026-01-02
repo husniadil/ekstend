@@ -1,0 +1,10 @@
+{
+  "name": "interview",
+  "description": "Deep requirements gathering skill that interviews users through thoughtful, in-depth questions before implementation. Extracts technical, UX, architectural, and edge case requirements.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Husni Adil Makmur",
+    "email": "husni.adil@gmail.com"
+  },
+  "license": "MIT"
+}

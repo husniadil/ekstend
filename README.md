@@ -75,6 +75,22 @@ Iterative code review skill with gap detection and user-controlled fixes. Suppor
 
 [Learn more](./plugins/code-review/README.md)
 
+### interview
+
+Deep requirements gathering skill that interviews users through thoughtful, in-depth questions before implementation. Uses CDEEPER workflow to uncover hidden requirements, edge cases, and trade-offs.
+
+**Features:**
+
+- CDEEPER workflow: Contextualize, Discover, Explore, Edge, Prioritize, Experience, Ready
+- Codebase exploration before questioning (avoids obvious questions)
+- Skip-to-summary flow with configurable styles (Minimal/Inferred/Critical first)
+- Question tracking and deduplication
+- Confidence scoring (percentage-based on each requirement)
+- Hybrid question ordering (domain-based + adaptive)
+- Multi-session persistence with phase tracking
+
+[Learn more](./plugins/interview/README.md)
+
 ## Installation
 
 ### From terminal (non-interactive)
@@ -86,6 +102,7 @@ claude plugin install skill-creator@ekstend
 claude plugin install database@ekstend
 claude plugin install ideate@ekstend
 claude plugin install code-review@ekstend
+claude plugin install interview@ekstend
 ```
 
 ### From Claude Code session (interactive)
@@ -104,6 +121,7 @@ claude plugin install code-review@ekstend
 /plugin install database@ekstend
 /plugin install ideate@ekstend
 /plugin install code-review@ekstend
+/plugin install interview@ekstend
 ```
 
 Or browse available plugins interactively with `/plugin` and select "Browse Plugins".

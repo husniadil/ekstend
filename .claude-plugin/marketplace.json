@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "ekstend",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "description": "A collection of plugins for Claude Code including sequential thinking tools.",
   "owner": {
     "name": "Husni Adil Makmur",
@@ -67,6 +67,18 @@
       "license": "MIT",
       "source": "./plugins/code-review",
       "category": "development"
+    },
+    {
+      "name": "interview",
+      "description": "Deep requirements gathering skill that interviews users through thoughtful, in-depth questions before implementation. Uncovers hidden requirements, edge cases, and trade-offs.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Husni Adil Makmur",
+        "email": "husni.adil@gmail.com"
+      },
+      "license": "MIT",
+      "source": "./plugins/interview",
+      "category": "productivity"
     }
   ]
 }
